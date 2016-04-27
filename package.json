@@ -1,0 +1,16 @@
+{
+  "name": "restshell",
+  "version": "0.0.1",
+  "dependencies": {
+    "body-parser": "^1.15.0",
+    "connect-multiparty": "^2.0.0",
+    "express": "^4.13.4",
+    "globule": "^1.0.0",
+    "gridfs-stream": "^1.1.1",
+    "mongodb": "^2.1.17",
+    "node.extend": "^1.1.5",
+    "request": "^2.72.0",
+    "uuid": "^2.0.2",
+    "yargs": "^4.6.0"
+  }
+}
