@@ -15,9 +15,12 @@ StaticHelper.setStaticPath("#{__dirname}/static/")
 if typeof yargs.recipe is "string"
     yargs.recipe = [yargs.recipe]
 
+console.log "Start RestShell"
+
 app = new HTTPServer()
 
 for recipe in yargs.recipe
+    console.log "Add Recipe: #{recipe}"
     app.addRecipe recipe, require "./recipe/#{recipe}"
 
 app.listen()

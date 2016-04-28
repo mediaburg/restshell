@@ -1,5 +1,4 @@
 extend = require 'node.extend'
-sync = require 'synchronize'
 
 class StepGroup
     constructor : (@name, config) ->
