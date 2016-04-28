@@ -39,10 +39,15 @@ class MongoFileRead extends AbstractProcessor
                     writable.on 'close', (file) =>
                         db.close()
 
-                        @cb.onSuccess(@currentStep, @userSession, output)
+                        @cb.onSuccess(output)
                 else
-                    console.log "AA"
-                    @cb.onError(@currentStep, @userSession, {})
+                    error =
+                        state : "error"
+                        message : "File not Found"
+                        fileId : @params.fileId
+                        jobId : @jobId
+
+                    @cb.onError(error)
 
 
 

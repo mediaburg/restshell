@@ -9,6 +9,7 @@ Grid         = require 'gridfs-stream'
 class MongoFileWrite extends AbstractProcessor
     constructor : (@jobId) ->
         super
+        @input = "file"
         @params =
             "url" : null
             "collection" : null
@@ -17,17 +18,24 @@ class MongoFileWrite extends AbstractProcessor
                 filename    : params.file.getName()
                 root        : params.collection
 
-
     run : () ->
-        MongoClient.connect @params.url, (err, db) =>
-            gfs = Grid(db, mongo);
+        if !@params.file?
+            error =
+                state : "error"
+                message : "No File provided"
+                jobId : @jobId
 
-            writestream = gfs.createWriteStream @params.onWriteData(@params, @userSession)
+            @cb.onError error
+        else
+            MongoClient.connect @params.url, (err, db) =>
+                gfs = Grid(db, mongo)
 
-            writestream.on 'close', (metadata) =>
-                db.close()
-                @cb.onSuccess(@currentStep, @userSession, metadata)
+                writestream = gfs.createWriteStream @params.onWriteData(@params, @userSession)
 
-            fs.createReadStream(@params.file.getPath()).pipe(writestream)
+                writestream.on 'close', (metadata) =>
+                    db.close()
+                    @cb.onSuccess(metadata)
+
+                fs.createReadStream(@params.file.getPath()).pipe(writestream)
 
 module.exports = MongoFileWrite

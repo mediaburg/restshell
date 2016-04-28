@@ -21,5 +21,4 @@ class UserSession
     getResponse : ->
         @response
 
-
 module.exports = UserSession

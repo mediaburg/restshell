@@ -3,6 +3,7 @@ extend = require 'node.extend'
 
 class AbstractProcessor
     constructor : (@jobId) ->
+        @input = null
         @params = {}
         @forceParams = false
         @command = ""
@@ -10,9 +11,13 @@ class AbstractProcessor
         @currentStep = null
 
         @cb =
-            onSuccess : (currentStep, userSession, output) ->
-            onError : (currentStep, userSession, output) ->
-                console.log output
+            stepRunner : (output) ->
+            onError : (output) ->
+                console.log "Error: ", output
+
+    setInput : (input) ->
+        if @input of @params
+            @params[@input] = input
 
     run : () ->
         @cb.onSuccess(@currentStep, @userSession, uuid.v4())
@@ -21,21 +26,14 @@ class AbstractProcessor
 
     setCurrentStep : (@currentStep) ->
 
-    setParams : (params, prefix, tryBothNames) ->
-        loopParams = @params
-
-        if @forceParams
-            loopParams = extend(true, loopParams, params)
-
+    setParams : (params, prefix) ->
         for name of @params
             prefixName = name
-            if prefix
-                prefixName = "#{prefix}-#{name}"
+            if prefix?
+                prefixName = "#{prefix}#{name}"
 
-            if params[prefixName]?
+            if prefixName of params
                 @params[name] = params[prefixName]
-            else if tryBothNames && params[name]
-                @params[name] = params[name]
 
     onSuccess : (cb) ->
         @cb.onSuccess = cb

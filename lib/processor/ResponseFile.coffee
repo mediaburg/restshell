@@ -3,6 +3,7 @@ AbstractProcessor = require './AbstractProcessor'
 class ResponseFile extends AbstractProcessor
     constructor : (@jobId) ->
         super
+        @input = "file"
         @params =
             "file" : null
 

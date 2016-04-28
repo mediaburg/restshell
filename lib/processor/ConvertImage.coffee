@@ -5,6 +5,7 @@ exec        = require('child_process').exec
 class ConvertImage extends AbstractProcessor
     constructor : (@jobId) ->
         super
+        @input = "file"
         @command = "convert"
         @params =
             "file" : null
@@ -35,10 +36,10 @@ class ConvertImage extends AbstractProcessor
 
         jobExec = exec(command)
         jobExec.stderr.on 'data', (data) =>
-            @cb.onError(@currentStep, @userSession, data)
+            @cb.onError(data)
 
         jobExec.stderr.on 'end', () =>
-            @cb.onSuccess(@currentStep, @userSession, output)
+            @cb.onSuccess(output)
 
 
 module.exports = ConvertImage

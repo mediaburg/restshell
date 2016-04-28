@@ -1,13 +1,7 @@
 #!/usr/bin/env coffee
-
 yargs = require 'yargs'
-uuid = require 'uuid'
-
 HTTPServer = require './lib/HTTPServer'
-
-Recipe = require './lib/Recipe'
 StaticHelper = require './lib/StaticHelper'
-UserSession = require './lib/UserSession'
 
 yargs = yargs.options({
     'recipe' :
@@ -15,24 +9,15 @@ yargs = yargs.options({
         demand: true
     }).argv
 
-
-recipeConfig = require "./recipe/#{yargs.recipe}"
-
 StaticHelper.setStaticUrl("http://localhost:3000/static/")
 StaticHelper.setStaticPath("#{__dirname}/static/")
 
-restOptions =
-    onStart : (req, res) ->
-        jobId = uuid.v4()
+if typeof yargs.recipe is "string"
+    yargs.recipe = [yargs.recipe]
 
-        session = new UserSession(req, res)
+app = new HTTPServer()
 
-        recipe = new Recipe(recipeConfig, jobId)
-        recipe.setUserSession(session)
-        recipe.run()
+for recipe in yargs.recipe
+    app.addRecipe recipe, require "./recipe/#{recipe}"
 
-        if !recipe.hasResponse()
-            res.json("jobId":jobId)
-
-app = new HTTPServer(restOptions)
 app.listen()

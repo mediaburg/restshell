@@ -50,6 +50,8 @@ class HTML2PDF extends AbstractProcessor
                     state = (100 / 6) * state
                     #hook.onProcess @jobId, state
             else if(data.match(/Done/))
-                @cb.onSuccess(@currentStep, @userSession, output)
+                @cb.onSuccess(output)
+
+        @cb.onError("XXX")
 
 module.exports = HTML2PDF
