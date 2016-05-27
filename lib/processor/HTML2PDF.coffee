@@ -40,6 +40,8 @@ class HTML2PDF extends AbstractProcessor
 
         command += " #{content} #{output.getPath()}"
 
+        console.log command
+
         jobExec = exec(command)
         #hook.onStart(@jobId)
         jobExec.stderr.on 'data', (data) =>
@@ -50,8 +52,8 @@ class HTML2PDF extends AbstractProcessor
                     state = (100 / 6) * state
                     #hook.onProcess @jobId, state
             else if(data.match(/Done/))
+                console.log output
                 @cb.onSuccess(output)
 
-        @cb.onError("XXX")
 
 module.exports = HTML2PDF
